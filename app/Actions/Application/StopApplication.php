@@ -27,6 +27,8 @@ class StopApplication
 
                 if ($server->isSwarm()) {
                     instant_remote_process(["docker stack rm {$application->uuid}"], $server);
+                    // Update status to exited immediately after stopping the swarm stack
+                    $application->update(['status' => 'exited']);
 
                     return;
                 }
@@ -55,6 +57,8 @@ class StopApplication
                 return $e->getMessage();
             }
         }
+        // Update status to exited immediately after stopping all containers
+        $application->update(['status' => 'exited']);
         ServiceStatusChanged::dispatch($application->environment->project->team->id);
     }
 }

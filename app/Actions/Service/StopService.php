@@ -36,6 +36,14 @@ class StopService
                 $this->stopContainersInParallel($containersToStop, $server);
             }
 
+            // Update status to exited immediately after stopping containers
+            foreach ($applications as $application) {
+                $application->update(['status' => 'exited']);
+            }
+            foreach ($dbs as $db) {
+                $db->update(['status' => 'exited']);
+            }
+
             if ($deleteConnectedNetworks) {
                 $service->deleteConnectedNetworks();
             }

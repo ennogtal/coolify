@@ -28,6 +28,9 @@ class StopDatabase
 
             $this->stopContainer($database, $database->uuid, 30);
 
+            // Update status to exited immediately after stopping the container
+            $database->update(['status' => 'exited']);
+
             if ($dockerCleanup) {
                 CleanupDocker::dispatch($server, false, false);
             }
